@@ -318,7 +318,7 @@
 			<origin rpy="0 0 0" xyz="0.005409 0.000556 -0.005751"/>
 		</inertial>
 	</link-->
-	<link name="gripper" type="fixed"> <!--indexfinder-->
+	<link name="gripper"> <!--indexfinder-->
 		<visual>
 			<geometry>
 				<mesh filename="mesh/finger.stl"/>
