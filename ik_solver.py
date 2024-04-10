@@ -11,7 +11,8 @@ DEFAULT_SPEED = 0.08
 SIMDELAY = 0.5
 SIMREALDELAY = 3
 RESETDELAY = 4
-REALJOINTS = ['r_shoulder_z','r_shoulder_y','r_arm_x','r_elbow_y','r_wrist_z','r_wrist_x','r_indexfinger_x']
+REALJOINTS = ['r_shoulder_z','r_shoulder_y','r_arm_x','r_elbow_y','r_wrist_z','r_wrist_x']
+FIXEDJOINTS = ['r_indexfinger_x']
 
 def target():
     
@@ -172,7 +173,7 @@ def main():
     joints_limits, joints_ranges, joints_rest_poses, end_effector_index, joint_names, link_names, joint_indices = get_joints_limits(robot_id, num_joints,arg_dict)
     # Custom intital position
     
-    joints_rest_poses = deg2rad([-15, 68, 2.8, 56.4, 0.0, 11.0, -70.0])
+    #joints_rest_poses = deg2rad([-15, 68, 2.8, 56.4, 0.0, 11.0, -70.0])
     
     # Real robot initialization
     if arg_dict["real_robot"]:
@@ -206,17 +207,19 @@ def main():
                           baseCollisionShapeIndex= -1, baseMass=0,basePosition=target_position)
         
 
+        #target_orientation = target_position + [1]
         # Perform IK
-        ik_solution = p.calculateInverseKinematics(robot_id, end_effector_index, target_position,
-                                                maxNumIterations=max_iterations,
-                                                residualThreshold=residual_threshold)        
-        #ik_solution = p.calculateInverseKinematics(robot_id,
-        #                                               end_effector_index,
-        #                                               target_position,
-        #                                               lowerLimits=joints_limits[0],
-        #                                               upperLimits=joints_limits[1],
-        #                                               jointRanges=joints_ranges,
-        #                                               restPoses=joints_rest_poses)
+        #ik_solution = p.calculateInverseKinematics(robot_id, end_effector_index, target_position,
+        #                                           targetOrientation=target_orientation,
+        #                                        maxNumIterations=max_iterations,
+        #                                        residualThreshold=residual_threshold)        
+        ik_solution = p.calculateInverseKinematics(robot_id,
+                                                       end_effector_index,
+                                                       target_position,
+                                                       lowerLimits=joints_limits[0],
+                                                       upperLimits=joints_limits[1],
+                                                       jointRanges=joints_ranges,
+                                                       restPoses=joints_rest_poses)
         
         
         if arg_dict["animate"]:
