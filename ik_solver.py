@@ -47,7 +47,8 @@ def get_joints_limits(robot_id, num_joints,arg_dict):
                 if link_name.decode("utf-8") == 'endeffectol':
                     end_effector_index = jid
             else:
-                if link_name.decode("utf-8") == 'endeffector':
+                if link_name.decode("utf-8") == 'right_palm':
+                #if link_name.decode("utf-8") == 'endeffector':
                     end_effector_index = jid
             
         return [joints_limits_l, joints_limits_u], joints_ranges, joints_rest_poses, end_effector_index, joint_names, link_names, joint_indices
@@ -84,7 +85,7 @@ def init_robot():
                 'r_shoulder_y':68.0,
                 'r_arm_x':2.8,
                 'r_elbow_y':56.4,
-                'r_wrist_z':0.0,
+                'r_wrist_z':140.0,
                 'r_wrist_x':11.0,
                 'r_thumb_z':-57.0,
                 'r_thumb_x':180.0,
@@ -122,7 +123,7 @@ def reset_robot(robot):
                 'r_shoulder_y':68.0,
                 'r_arm_x':2.8,
                 'r_elbow_y':56.4,
-                'r_wrist_z':0.0,
+                'r_wrist_z':140.0,
                 'r_wrist_x':11.0,
                 'r_thumb_z':-57.0,
                 'r_thumb_x':180.0,
