@@ -17,7 +17,7 @@ FIXEDJOINTS = ['r_indexfinger_x']
 def target():
     
     target_position = [0.25+(0.3*random.rand()),0.25+(-0.5*random.rand()), 0.05]  # Write your own method for end effector position here
-
+    return [0.25, -0.2, 0.15]
     return target_position
 
 def get_joints_limits(robot_id, num_joints,arg_dict):
@@ -169,7 +169,7 @@ def main():
     #Create table mesh
     p.createMultiBody(baseVisualShapeIndex=p.createVisualShape(shapeType=p.GEOM_BOX, halfExtents=[.3,.45,0.02], rgbaColor=[0.6,0.6,0.6,1]),
                           baseCollisionShapeIndex= -1, baseMass=0,basePosition=[0.27,0,0.02])
-    #Create table mesh
+    #Create tablet mesh
     p.createMultiBody(baseVisualShapeIndex=p.createVisualShape(shapeType=p.GEOM_BOX, halfExtents=[.16,.26,0.01], rgbaColor=[0,0,0.0,1]),
                           baseCollisionShapeIndex= -1, baseMass=0,basePosition=[0.41,0,0.035])
     num_joints = p.getNumJoints(robot_id)
@@ -205,7 +205,8 @@ def main():
             target_position = arg_dict["position"]
         else:
             target_position = target()
-
+        
+        #Create goal dot
         p.createMultiBody(baseVisualShapeIndex=p.createVisualShape(shapeType=p.GEOM_SPHERE, radius=0.01, rgbaColor=[0,0,1,.7]),
                           baseCollisionShapeIndex= -1, baseMass=0,basePosition=target_position)
         
@@ -247,6 +248,12 @@ def main():
         
         
         if arg_dict["real_robot"]:
+            #Set fingers of hand
+            robot.setAngle('r_indexfinger_x', -180.0, DEFAULT_SPEED)
+            robot.setAngle('r_middlefingers_x', 180.0, DEFAULT_SPEED)
+            robot.setAngle('r_thumb_z', -57.0, DEFAULT_SPEED)
+            robot.setAngle('r_thumb_x', 180.0, DEFAULT_SPEED)
+
             for i,realjoint in enumerate(REALJOINTS):
                 robot.setAngle(realjoint,rad2deg(ik_solution[i]),DEFAULT_SPEED)
             time.sleep(SIMREALDELAY)
