@@ -11,6 +11,11 @@ DEFAULT_SPEED = 0.08
 SIMDELAY = 0.5
 SIMREALDELAY = 3
 RESETDELAY = 4
+# Once the coordinate system is fixed and all that, 
+# when the code is extracted into a compact version for my project
+# that can be called and returns the angles, this will move into global_static_vars
+ANGLE_SHIFT_WRIST_Z = 56
+ANGLE_SHIFT_WRIST_X = 120
 REALJOINTS = ['r_shoulder_z','r_shoulder_y','r_arm_x','r_elbow_y','r_wrist_z','r_wrist_x']
 FIXEDJOINTS = ['r_indexfinger_x']
 
@@ -255,7 +260,12 @@ def main():
             robot.setAngle('r_thumb_x', 180.0, DEFAULT_SPEED)
 
             for i,realjoint in enumerate(REALJOINTS):
-                robot.setAngle(realjoint,rad2deg(ik_solution[i]),DEFAULT_SPEED)
+                degrees = rad2deg(ik_solution[i])
+                if realjoint == 'r_wrist_z':
+                    degrees += ANGLE_SHIFT_WRIST_Z
+                elif realjoint == 'r_wrist_x':
+                    degrees += ANGLE_SHIFT_WRIST_X    
+                robot.setAngle(realjoint, degrees,DEFAULT_SPEED)
             time.sleep(SIMREALDELAY)
             # Send joint angles to real robot
         
