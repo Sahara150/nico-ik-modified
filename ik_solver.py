@@ -166,8 +166,10 @@ def main():
         robot_id = p.loadURDF("./nico_upper_rh6d_l.urdf", [0, 0, 0])
     else:
         robot_id = p.loadURDF("./nico_upper_rh6d_r.urdf", [0, 0, 0])
+    #Create table mesh
     p.createMultiBody(baseVisualShapeIndex=p.createVisualShape(shapeType=p.GEOM_BOX, halfExtents=[.3,.45,0.02], rgbaColor=[0.6,0.6,0.6,1]),
                           baseCollisionShapeIndex= -1, baseMass=0,basePosition=[0.27,0,0.02])
+    #Create table mesh
     p.createMultiBody(baseVisualShapeIndex=p.createVisualShape(shapeType=p.GEOM_BOX, halfExtents=[.16,.26,0.01], rgbaColor=[0,0,0.0,1]),
                           baseCollisionShapeIndex= -1, baseMass=0,basePosition=[0.41,0,0.035])
     num_joints = p.getNumJoints(robot_id)
