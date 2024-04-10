@@ -47,7 +47,7 @@ def get_joints_limits(robot_id, num_joints,arg_dict):
                 if link_name.decode("utf-8") == 'endeffectol':
                     end_effector_index = jid
             else:
-                if link_name.decode("utf-8") == 'right_palm':
+                if link_name.decode("utf-8") == 'endeffector':
                 #if link_name.decode("utf-8") == 'endeffector':
                     end_effector_index = jid
             
@@ -234,7 +234,7 @@ def main():
                 # Set joint angles to the IK solution
                 p.stepSimulation()
         else:
-            for i in range(len(joint_indices)):
+            for i in range(len(joint_indices)):    
                 p.resetJointState(robot_id, joint_indices[i], ik_solution[i])
             time.sleep(SIMDELAY)
         
