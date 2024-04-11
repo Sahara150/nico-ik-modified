@@ -14,8 +14,12 @@ RESETDELAY = 4
 # Once the coordinate system is fixed and all that, 
 # when the code is extracted into a compact version for my project
 # that can be called and returns the angles, this will move into global_static_vars
-ANGLE_SHIFT_WRIST_Z = 56
-ANGLE_SHIFT_WRIST_X = 120
+ANGLE_MULT_WRIST_Z = 2
+ANGLE_MULT_WRIST_X = -4
+ANGLE_SHIFT_WRIST_X = 15
+Z_HEIGHT_REAL = 0.085
+X_BOTTOM_TABLET = 0.28
+Y_RIGHT_TABLET = -0.22
 REALJOINTS = ['r_shoulder_z','r_shoulder_y','r_arm_x','r_elbow_y','r_wrist_z','r_wrist_x']
 FIXEDJOINTS = ['r_indexfinger_x']
 
@@ -79,7 +83,7 @@ def init_robot():
                 'l_shoulder_z':0.0,
                 'l_shoulder_y':0.0,
                 'l_arm_x':0.0,
-                'l_elbow_y':89.0,
+                'l_elbow_y':90.0,
                 'l_wrist_z':0.0,
                 'l_wrist_x':-56.0,
                 'l_thumb_z':-57.0,
@@ -89,7 +93,7 @@ def init_robot():
                 'r_shoulder_z':-15.0,
                 'r_shoulder_y':68.0,
                 'r_arm_x':2.8,
-                'r_elbow_y':56.4,
+                'r_elbow_y':90.0,
                 'r_wrist_z':140.0,
                 'r_wrist_x':11.0,
                 'r_thumb_z':-57.0,
@@ -117,7 +121,7 @@ def reset_robot(robot):
                 'l_shoulder_z':0.0,
                 'l_shoulder_y':0.0,
                 'l_arm_x':0.0,
-                'l_elbow_y':89.0,
+                'l_elbow_y':90.0,
                 'l_wrist_z':0.0,
                 'l_wrist_x':-56.0,
                 'l_thumb_z':-57.0,
@@ -127,7 +131,7 @@ def reset_robot(robot):
                 'r_shoulder_z':-15.0,
                 'r_shoulder_y':68.0,
                 'r_arm_x':2.8,
-                'r_elbow_y':56.4,
+                'r_elbow_y':90.0,
                 'r_wrist_z':140.0,
                 'r_wrist_x':11.0,
                 'r_thumb_z':-57.0,
@@ -173,15 +177,15 @@ def main():
         robot_id = p.loadURDF("./nico_upper_rh6d_r.urdf", [0, 0, 0])
     #Create table mesh
     p.createMultiBody(baseVisualShapeIndex=p.createVisualShape(shapeType=p.GEOM_BOX, halfExtents=[.3,.45,0.02], rgbaColor=[0.6,0.6,0.6,1]),
-                          baseCollisionShapeIndex= -1, baseMass=0,basePosition=[0.27,0,0.02])
+                          baseCollisionShapeIndex= -1, baseMass=0,basePosition=[0.27,0,Z_HEIGHT_REAL-0.03])
     #Create tablet mesh
     p.createMultiBody(baseVisualShapeIndex=p.createVisualShape(shapeType=p.GEOM_BOX, halfExtents=[.16,.26,0.01], rgbaColor=[0,0,0.0,1]),
-                          baseCollisionShapeIndex= -1, baseMass=0,basePosition=[0.41,0,0.035])
+                          baseCollisionShapeIndex= -1, baseMass=0,basePosition=[X_BOTTOM_TABLET + 0.16,0, Z_HEIGHT_REAL-0.01])
     num_joints = p.getNumJoints(robot_id)
     joints_limits, joints_ranges, joints_rest_poses, end_effector_index, joint_names, link_names, joint_indices = get_joints_limits(robot_id, num_joints,arg_dict)
+
     # Custom intital position
-    
-    #joints_rest_poses = deg2rad([-15, 68, 2.8, 56.4, 0.0, 11.0, -70.0])
+    joints_rest_poses = [joints_rest_poses[0], joints_rest_poses[1], joints_rest_poses[2], deg2rad(90.0), deg2rad(90.0), deg2rad(-40.0)]
     
     # Real robot initialization
     if arg_dict["real_robot"]:
@@ -228,7 +232,9 @@ def main():
                                                        lowerLimits=joints_limits[0],
                                                        upperLimits=joints_limits[1],
                                                        jointRanges=joints_ranges,
-                                                       restPoses=joints_rest_poses)
+                                                       restPoses=joints_rest_poses,
+                                                       maxNumIterations=max_iterations,
+                                                       residualThreshold=residual_threshold)
         
         
         if arg_dict["animate"]:
@@ -256,15 +262,17 @@ def main():
             #Set fingers of hand
             robot.setAngle('r_indexfinger_x', -180.0, DEFAULT_SPEED)
             robot.setAngle('r_middlefingers_x', 180.0, DEFAULT_SPEED)
-            robot.setAngle('r_thumb_z', -57.0, DEFAULT_SPEED)
-            robot.setAngle('r_thumb_x', 180.0, DEFAULT_SPEED)
+            robot.setAngle('r_thumb_x', 11.0, DEFAULT_SPEED)
+            robot.setAngle('r_thumb_z', -72.0, DEFAULT_SPEED)
+
 
             for i,realjoint in enumerate(REALJOINTS):
                 degrees = rad2deg(ik_solution[i])
                 if realjoint == 'r_wrist_z':
-                    degrees += ANGLE_SHIFT_WRIST_Z
+                    degrees *= ANGLE_MULT_WRIST_Z
                 elif realjoint == 'r_wrist_x':
-                    degrees += ANGLE_SHIFT_WRIST_X    
+                    degrees += ANGLE_SHIFT_WRIST_X
+                    degrees *= ANGLE_MULT_WRIST_X    
                 robot.setAngle(realjoint, degrees,DEFAULT_SPEED)
             time.sleep(SIMREALDELAY)
             # Send joint angles to real robot

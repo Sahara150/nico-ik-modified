@@ -230,7 +230,7 @@
 		<child link="right_wrist"/>
 		<origin rpy="0 0 1.57" xyz="0 0 -0.105"/>
 		<axis xyz="0 0 1"/>
-		<limit effort="30" lower="1.46608" upper="1.67552" velocity="1"/>
+		<limit effort="30" lower="1.22173" upper="1.5708" velocity="1"/>
 	</joint>
 	<link name="right_palm"> <!--gripper-->
 		<visual>
@@ -259,7 +259,7 @@
 		<child link="right_palm"/>
 		<origin rpy="0 0 0" xyz="0 0 -0.10"/>
 		<axis xyz="0 1 0"/>
-		<limit effort="30" lower="-0.785398" upper="0" velocity="1"/>
+		<limit effort="30" lower="-0.698132" upper="-0.523599" velocity="1"/>
 	</joint>
 	<!--link name="endeffector">
     	<visual>
@@ -318,7 +318,7 @@
 			<origin rpy="0 0 0" xyz="0.005409 0.000556 -0.005751"/>
 		</inertial>
 	</link-->
-	<link name="gripper" type="fixed"> <!--indexfinder-->
+	<link name="gripper"> <!--indexfinder-->
 		<visual>
 			<geometry>
 				<mesh filename="mesh/finger.stl"/>
